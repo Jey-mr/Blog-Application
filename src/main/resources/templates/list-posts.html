@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .posts {
+            text-decoration: none !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+<h1>My Blog Application</h1>
+<div th:each="post: ${posts}">
+    <a th:href="@{/post{id}(id=${post.id})}" class="posts">
+        <div>
+            <h2 th:text="${post.title}"/>
+            <p th:text="${post.user.name + ', ' + post.publishedAt}"/>
+            <p th:text="${post.excerpt}"/>
+        </div>
+    </a>
+</div>
+
+<a th:href="@{/showForm}">New Post</a>
+
+</body>
+</html>

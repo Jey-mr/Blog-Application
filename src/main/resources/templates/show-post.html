@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .center{
+            text-align: center !important;
+        }
+    </style>
+</head>
+<body>
+<h2>My Blog Application</h2>
+<div>
+    <h1 th:text="${post.title}" class="center"/>
+    <p th:text="${post.user.name + ', ' + post.publishedAt}" class="center"/>
+    <p th:text="${post.content}" class="center"/>
+</div>
+</body>
+</html>

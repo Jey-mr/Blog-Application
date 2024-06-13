@@ -2,10 +2,11 @@ package com.jey.blogapp.service;
 
 import com.jey.blogapp.dao.PostRepository;
 import com.jey.blogapp.entity.Post;
-import com.jey.blogapp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -19,5 +20,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public void save(Post post) {
         postRepository.save(post);
+    }
+
+    @Override
+    public List<Post> findAll() {
+        return postRepository.findAll();
+    }
+
+    @Override
+    public Post findById(int id) {
+        Optional<Post> result = postRepository.findById(id);
+        Post post = null;
+
+        if(result.isPresent()) {
+            post = result.get();
+        }
+
+        return post;
     }
 }
