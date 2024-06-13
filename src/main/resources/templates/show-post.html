@@ -16,5 +16,11 @@
     <p th:text="${post.user.name + ', ' + post.publishedAt}" class="center"/>
     <p th:text="${post.content}" class="center"/>
 </div>
+
+<form th:action="@{/editPost}" method="GET">
+    <input type="hidden" name="id" th:value="${post.id}" />
+    <input type="submit" value="Edit" />
+</form>
+
 </body>
 </html>

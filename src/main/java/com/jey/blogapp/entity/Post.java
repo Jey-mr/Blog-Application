@@ -31,8 +31,7 @@ public class Post {
     @Column(name="updated_at")
     private String updatedAt;
 
-    @ManyToOne(cascade = {CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="author", referencedColumnName="name")
     private User user;
 
@@ -120,5 +119,19 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", excerpt='" + excerpt + '\'' +
+                ", content='" + content + '\'' +
+                ", publishedAt='" + publishedAt + '\'' +
+                ", isPublished=" + isPublished +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
     }
 }

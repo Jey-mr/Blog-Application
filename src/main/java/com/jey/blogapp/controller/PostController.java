@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -40,6 +41,28 @@ public class PostController {
     @GetMapping("/showForm")
     public String showForm(Model model) {
         return "new-post";
+    }
+
+    @GetMapping("/editPost")
+    public String editPost(HttpServletRequest request, Model model) {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Post post = postService.findById(id);
+        model.addAttribute("post", post);
+        return "edit-post";
+    }
+
+    @PostMapping("/updatePost")
+    public String updatePost(HttpServletRequest request, @ModelAttribute Post post) {
+        int id = Integer.parseInt(request.getParameter("userId"));
+        User user = userService.findById(id);
+
+        post.setUser(user);
+        post.setPublished(true);
+        post.setCreatedAt(null);
+        post.setUpdatedAt(null);
+
+        postService.save(post);
+        return "redirect:/";
     }
 
     @PostMapping("/processForm")
