@@ -86,6 +86,10 @@ public class User {
         post.setUser(this);
     }
 
+    public void remove(Post post) {
+        posts.remove(post);
+    }
+
     @Override
     public String toString() {
         return "User{" +

@@ -2,6 +2,7 @@ package com.jey.blogapp.service;
 
 import com.jey.blogapp.dao.PostRepository;
 import com.jey.blogapp.entity.Post;
+import com.jey.blogapp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +38,13 @@ public class PostServiceImpl implements PostService {
         }
 
         return post;
+    }
+
+    @Override
+    public void deleteById(int id) {
+        Post post = findById(id);
+        User user = post.getUser();
+        user.remove(post);
+        postRepository.delete(post);
     }
 }

@@ -7,10 +7,7 @@ import com.jey.blogapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,6 +48,13 @@ public class PostController {
         return "edit-post";
     }
 
+    @GetMapping("/deletePost")
+    public String deletePost(@RequestParam("id") int id) {
+        System.out.println("\n\n the row which will be deleted is: " + id + "\n\n");
+        postService.deleteById(id);
+        return "redirect:/";
+    }
+
     @PostMapping("/updatePost")
     public String updatePost(HttpServletRequest request, @ModelAttribute Post post) {
         int id = Integer.parseInt(request.getParameter("userId"));
@@ -77,6 +81,6 @@ public class PostController {
         user.add(post);
         postService.save(post);
 
-        return listPosts(model);
+        return "redirect:/";
     }
 }
