@@ -7,6 +7,16 @@
         .center{
             text-align: center !important;
         }
+
+        .hide {
+            display: none;
+        }
+
+        .myDIV:hover .hide {
+            display: inline-block !important;
+            height: 50px;
+            width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -26,6 +36,50 @@
     <input type="hidden" name="id" th:value="${post.id}" />
     <input type="submit" value="Delete" />
 </form>
+
+<br><br>
+
+<form th:action="@{/addComment}" method="POST">
+    <input type="hidden" name="postId" th:value="${post.id}" />
+    <input type="text" name="name" placeholder="name" />
+    <br>
+    <input type="text" name="email" placeholder="email" />
+    <br>
+    <input type="text" name="comment" placeholder="comment" />
+    <br>
+    <input type="submit" value="Add" />
+</form>
+
+<br><br>
+
+<div th:each="comment: ${comments}">
+    <div class="myDIV" th:if="${id != comment.id}">
+        <h2 th:text="${comment.name}"/>
+        <p th:text="${comment.comment}"/>
+        <div class="hide">
+            <form th:action="@{/editComment}" method="GET">
+                <input type="hidden" name="id" th:value="${comment.id}" />
+                <input type="submit" value="Edit" />
+            </form>
+            <form th:action="@{/deleteComment}" method="GET">
+                <input type="hidden" name="id" th:value="${comment.id}" />
+                <input type="hidden" name="postId" th:value="${post.id}" />
+                <input type="submit" value="Delete" />
+            </form>
+        </div>
+    </div>
+
+    <form th:action="@{/updateComment}" method="POST" th:unless="${id != comment.id}">
+        <input type="hidden" name="id" th:value="${comment.id}" />
+        <input type="hidden" name="postId" th:value="${post.id}" />
+<!--        <input type="hidden" name="name" th:value="${comment.name}" />-->
+<!--        <input type="hidden" name="email" th:value="${comment.email}" />-->
+<!--        <input type="hidden" name="createdAt" th:value="${comment.createdAt}" />-->
+        <input type="text" name="comment" th:value="${comment.comment}" />
+        <br>
+        <input type="submit" value="Update" />
+    </form>
+</div>
 
 </body>
 </html>

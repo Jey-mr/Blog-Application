@@ -1,5 +1,6 @@
 package com.jey.blogapp.controller;
 
+import com.jey.blogapp.entity.Comment;
 import com.jey.blogapp.entity.Post;
 import com.jey.blogapp.entity.User;
 import com.jey.blogapp.service.PostService;
@@ -33,7 +34,11 @@ public class PostController {
     @GetMapping("/post{postId}")
     public String showPost(Model model, @PathVariable int postId) {
         Post post = postService.findById(postId);
+        List<Comment> comments = post.getComments();
+
         model.addAttribute("post", post);
+        model.addAttribute("comments", comments);
+
         return "show-post";
     }
 
