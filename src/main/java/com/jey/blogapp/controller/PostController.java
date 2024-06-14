@@ -63,7 +63,6 @@ public class PostController {
 
         post.setUser(user);
         post.setPublished(true);
-        post.setCreatedAt(null);
         post.setUpdatedAt(getDate());
         post.setExcerpt(getExcerpt(post.getContent()));
         postService.save(post);
@@ -80,8 +79,8 @@ public class PostController {
         post.setContent(request.getParameter("content"));
         post.setExcerpt(getExcerpt(post.getContent()));
         post.setPublishedAt(getDate());
+        post.setCreatedAt(getDate());
         post.setPublished(true);
-        post.setExcerpt("temp");
         user.add(post);
         postService.save(post);
 
