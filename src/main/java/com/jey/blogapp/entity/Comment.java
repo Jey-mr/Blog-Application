@@ -25,7 +25,7 @@ public class Comment {
     @Column(name="updated_at")
     private String updatedAt;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="post_id")
     private Post post;
 

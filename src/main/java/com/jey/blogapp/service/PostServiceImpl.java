@@ -43,8 +43,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deleteById(int id) {
         Post post = findById(id);
-        User user = post.getUser();
-        user.remove(post);
         postRepository.delete(post);
     }
 }

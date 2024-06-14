@@ -12,6 +12,9 @@
 </head>
 <body>
 <h1>My Blog Application</h1>
+<a th:href="@{/showForm}">New Post</a>
+<br>
+
 <div th:each="post: ${posts}">
     <a th:href="@{/post{id}(id=${post.id})}" class="posts">
         <div>
@@ -21,8 +24,6 @@
         </div>
     </a>
 </div>
-
-<a th:href="@{/showForm}">New Post</a>
 
 </body>
 </html>

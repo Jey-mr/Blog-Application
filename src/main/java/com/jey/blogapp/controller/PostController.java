@@ -62,14 +62,21 @@ public class PostController {
     }
 
     @PostMapping("/updatePost")
-    public String updatePost(HttpServletRequest request, @ModelAttribute Post post) {
-        int id = Integer.parseInt(request.getParameter("userId"));
-        User user = userService.findById(id);
+    public String updatePost(HttpServletRequest request) {
+        int id = Integer.parseInt(request.getParameter("id"));
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        User user = userService.findById(userId);
+        Post post = postService.findById(id);
 
         post.setUser(user);
         post.setPublished(true);
         post.setUpdatedAt(getDate());
+        post.setTitle(request.getParameter("title"));
+        post.setContent(request.getParameter("content"));
         post.setExcerpt(getExcerpt(post.getContent()));
+        post.setPublishedAt(request.getParameter("publishedAt"));
+        post.setCreatedAt(request.getParameter("createdAt"));
+
         postService.save(post);
 
         return "redirect:/";

@@ -1,6 +1,7 @@
 package com.jey.blogapp.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.type.descriptor.sql.internal.NativeEnumDdlTypeImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +35,23 @@ public class Post {
     @Column(name="updated_at")
     private String updatedAt;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="author", referencedColumnName="name")
     private User user;
 
     @OneToMany(mappedBy = "post", fetch=FetchType.EAGER,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            cascade = {CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<Comment> comments;
+
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "post_tags",
+            joinColumns = @JoinColumn(name="post_id"),
+            inverseJoinColumns = @JoinColumn(name="tag_id")
+    )
+    private List<Tag> tags;
 
     public Post() {
 
@@ -135,6 +145,22 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void add(Tag tag) {
+        if(tags == null){
+            tags = new ArrayList<>();
+        }
+
+        tags.add(tag);
     }
 
     public void add(Comment comment) {

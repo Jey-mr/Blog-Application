@@ -21,6 +21,7 @@
 </head>
 <body>
 <h2>My Blog Application</h2>
+<a th:href="@{/}">Home</a>
 <div>
     <h1 th:text="${post.title}" class="center"/>
     <p th:text="${post.user.name + ', ' + post.publishedAt}" class="center"/>
