@@ -2,6 +2,9 @@ package com.jey.blogapp.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="posts")
 public class Post {
@@ -34,6 +37,11 @@ public class Post {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="author", referencedColumnName="name")
     private User user;
+
+    @OneToMany(mappedBy = "post", fetch=FetchType.EAGER,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<Comment> comments;
 
     public Post() {
 
@@ -119,6 +127,27 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void add(Comment comment) {
+        if(comments == null) {
+            comments = new ArrayList<>();
+        }
+
+        comments.add(comment);
+        comment.setPost(this);
+    }
+
+    public void remove(Comment comment) {
+        comments.remove(comment);
     }
 
     @Override
