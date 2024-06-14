@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -50,7 +52,6 @@ public class PostController {
 
     @GetMapping("/deletePost")
     public String deletePost(@RequestParam("id") int id) {
-        System.out.println("\n\n the row which will be deleted is: " + id + "\n\n");
         postService.deleteById(id);
         return "redirect:/";
     }
@@ -63,9 +64,10 @@ public class PostController {
         post.setUser(user);
         post.setPublished(true);
         post.setCreatedAt(null);
-        post.setUpdatedAt(null);
-
+        post.setUpdatedAt(getDate());
+        post.setExcerpt(getExcerpt(post.getContent()));
         postService.save(post);
+
         return "redirect:/";
     }
 
@@ -73,14 +75,29 @@ public class PostController {
     public String newPost(HttpServletRequest request, Model model) {
         User user = userService.findById(1);
         Post post = new Post();
+
         post.setTitle(request.getParameter("title"));
         post.setContent(request.getParameter("content"));
-        post.setPublishedAt("2024-06-13");
+        post.setExcerpt(getExcerpt(post.getContent()));
+        post.setPublishedAt(getDate());
         post.setPublished(true);
         post.setExcerpt("temp");
         user.add(post);
         postService.save(post);
 
         return "redirect:/";
+    }
+
+    private String getExcerpt(String content) {
+        String excerpt = content.substring(0, Math.min(300, content.length()));
+        int index = excerpt.lastIndexOf('.');
+        excerpt = excerpt.substring(0, index+1);
+        return excerpt;
+    }
+
+    private String getDate() {
+        Date date = new Date();
+        String modifiedDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        return modifiedDate.toString();
     }
 }
