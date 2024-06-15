@@ -8,5 +8,6 @@ public interface TagService {
     void save(Tag tag);
     List<Tag> findAll();
     Tag findById(int id);
+    Tag findByName(String name);
     void deleteById(int id);
 }

@@ -1,11 +1,12 @@
 package com.jey.blogapp.controller;
 
-import com.jey.blogapp.entity.Comment;
-import com.jey.blogapp.entity.Post;
-import com.jey.blogapp.entity.User;
+import com.jey.blogapp.entity.*;
 import com.jey.blogapp.service.PostService;
+import com.jey.blogapp.service.PostTagService;
+import com.jey.blogapp.service.TagService;
 import com.jey.blogapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,15 @@ import java.util.List;
 public class PostController {
     private PostService postService;
     private UserService userService;
+    private TagService tagService;
+    private PostTagService postTagService;
 
-    public PostController(PostService postService, UserService userService) {
+    @Autowired
+    public PostController(PostService postService, UserService userService, TagService tagService, PostTagService postTagService) {
         this.postService = postService;
         this.userService = userService;
+        this.tagService = tagService;
+        this.postTagService = postTagService;
     }
 
     @GetMapping("/")
@@ -96,7 +102,35 @@ public class PostController {
         user.add(post);
         postService.save(post);
 
+        String tokens[] = request.getParameter("tags").split(",");
+        addTag(tokens, post);
+
         return "redirect:/";
+    }
+
+    private void addTag(String[] tokens, Post post) {
+        for(String token : tokens) {
+            Tag tag = tagService.findByName(token);
+
+            if(tag == null){
+                tag = new Tag(token, getDate());
+            }
+
+            PostTag postTag = new PostTag(getDate());
+            PostTagId postTagId = new PostTagId(post.getId(), tag.getId());
+
+            System.out.println("Post Id: "+post.getId());
+
+            postTag.setId(postTagId);
+            post.add(postTag);
+            tag.add(postTag);
+
+            if(tagService.findByName(token) == null){
+                tagService.save(tag);
+            }
+
+            postTagService.save(postTag);
+        }
     }
 
     private String getExcerpt(String content) {

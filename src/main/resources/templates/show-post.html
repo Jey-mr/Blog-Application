@@ -14,8 +14,7 @@
 
         .myDIV:hover .hide {
             display: inline-block !important;
-            height: 50px;
-            width: 200px;
+            height: 25px;
         }
     </style>
 </head>
@@ -40,6 +39,31 @@
 
 <br><br>
 
+<h2 th:if="${post.postTags.size() > 0}">Tags:</h2>
+<ul th:each="postTag: ${post.postTags}" class="myDIV">
+    <div th:if="${id != postTag.tag.id}">
+        <li th:text="${postTag.tag.name}" />
+    </div>
+
+    <form th:action="@{/updateTag}" method="POST" th:unless="${id != postTag.tag.id}">
+        <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+        <input type="text" name="name" th:value="${postTag.tag.name}"/>
+    </form>
+
+    <form th:action="@{/editTag}" method="GET" class="hide">
+        <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+        <input type="hidden" name="postId" th:value="${post.id}" />
+        <input type="submit" value="Edit" />
+    </form>
+    <form th:action="@{/deleteTag}" method="GET" class="hide">
+        <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+        <input type="hidden" name="postId" th:value="${post.id}" />
+        <input type="submit" value="Delete" />
+    </form>
+</ul>
+
+<br><br>
+
 <form th:action="@{/addComment}" method="POST">
     <input type="hidden" name="postId" th:value="${post.id}" />
     <input type="text" name="name" placeholder="name" />
@@ -57,17 +81,15 @@
     <div class="myDIV" th:if="${id != comment.id}">
         <h2 th:text="${comment.name}"/>
         <p th:text="${comment.comment}"/>
-        <div class="hide">
-            <form th:action="@{/editComment}" method="GET">
-                <input type="hidden" name="id" th:value="${comment.id}" />
-                <input type="submit" value="Edit" />
-            </form>
-            <form th:action="@{/deleteComment}" method="GET">
-                <input type="hidden" name="id" th:value="${comment.id}" />
-                <input type="hidden" name="postId" th:value="${post.id}" />
-                <input type="submit" value="Delete" />
-            </form>
-        </div>
+        <form th:action="@{/editComment}" method="GET" class="hide">
+            <input type="hidden" name="id" th:value="${comment.id}" />
+            <input type="submit" value="Edit" />
+        </form>
+        <form th:action="@{/deleteComment}" method="GET" class="hide">
+            <input type="hidden" name="id" th:value="${comment.id}" />
+            <input type="hidden" name="postId" th:value="${post.id}" />
+            <input type="submit" value="Delete" />
+        </form>
     </div>
 
     <form th:action="@{/updateComment}" method="POST" th:unless="${id != comment.id}">
