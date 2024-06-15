@@ -37,4 +37,12 @@ public class PostTagId implements Serializable {
     public void setTagId(int tagId) {
         this.tagId = tagId;
     }
+
+    @Override
+    public String toString() {
+        return "PostTagId{" +
+                "postId=" + postId +
+                ", tagId=" + tagId +
+                '}';
+    }
 }

@@ -6,6 +6,7 @@ import com.jey.blogapp.entity.PostTag;
 import com.jey.blogapp.entity.PostTagId;
 import com.jey.blogapp.entity.Tag;
 import com.jey.blogapp.service.PostService;
+import com.jey.blogapp.service.PostTagService;
 import com.jey.blogapp.service.TagService;
 import com.jey.blogapp.service.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -23,19 +24,19 @@ public class BlogappApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(TagService tagService, PostService postService, PostTagRepository PTRepository, UserService userService) {
+	public CommandLineRunner commandLineRunner(PostTagService postTagService, TagService tagService, PostService postService) {
 		return runner -> {
-			testing(tagService, postService, PTRepository);
+			testing(tagService, postService, postTagService);
 		};
 
 	}
 
-	private void testing(TagService tagService, PostService postService, PostTagRepository PTRepository) {
+	private void testing(TagService tagService, PostService postService, PostTagService postTagService) {
 		/*
 		* CREATING TAG AND LINKING IT TO POST(S)
 		*/
 
-//		addAndLinkTag(tagService, postService, PTRepository);
+//		addAndLinkTag(tagService, postService, postTagService);
 
 //		------X------
 
@@ -45,7 +46,7 @@ public class BlogappApplication {
 		* DELETING TAG
 		*/
 
-//		deleteTag(59, tagService, PTRepository);
+//		deleteTag(60, tagService, postTagService);
 
 //		------X------
 
@@ -54,7 +55,7 @@ public class BlogappApplication {
 		* UPDATE EXISTING TAG(S):
 		*/
 
-//		updateTag(tagService, postService, PTRepository);
+//		updateTag(tagService);
 
 //		------X------
 
@@ -63,17 +64,16 @@ public class BlogappApplication {
 
 	}
 
-	private void updateTag(TagService tagService, PostService postService, PostTagRepository ptRepository) {
+	private void updateTag(TagService tagService) {
 		Tag tag = tagService.findById(1);
 
 		tag.setName("Tag Updated again");
 		tagService.save(tag);
 
-//		System.out.println(tag.getPostTags().size());
 	}
 
 
-	private void addAndLinkTag(TagService tagService, PostService postService, PostTagRepository ptRepository) {
+	private void addAndLinkTag(TagService tagService, PostService postService, PostTagService postTagService) {
 		Tag tag = new Tag("tag", "2024-06-15");
 
 		for(int i=1; i<=7; i++) {
@@ -88,12 +88,12 @@ public class BlogappApplication {
 			if(tagService.findById(tag.getId()) == null)
 				tagService.save(tag);
 
-			ptRepository.save(postTag);
+			postTagService.save(postTag);
 		}
 
 	}
 
-	private void deleteTag(int id, TagService tagService, PostTagRepository PTRepository) {
+	private void deleteTag(int id, TagService tagService, PostTagService postTagService) {
 		Tag tag = tagService.findById(id);
 
 		System.out.println("Before: "+tag.getPostTags().size());
@@ -110,7 +110,7 @@ public class BlogappApplication {
 				}
 			}
 
-			PTRepository.delete(postTag);
+			postTagService.deleteById(postTag.getId());
 		}
 
 		tagService.deleteById(id);
