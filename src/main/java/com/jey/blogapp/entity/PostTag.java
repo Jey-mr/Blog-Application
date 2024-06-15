@@ -19,7 +19,7 @@ public class PostTag {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @MapsId("tagId")
-    @JoinColumn(name="tag_id")
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     @Column(name="created_at")
