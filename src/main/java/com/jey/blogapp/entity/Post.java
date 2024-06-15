@@ -44,6 +44,12 @@ public class Post {
                     CascadeType.DETACH, CascadeType.REFRESH})
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "post", fetch=FetchType.EAGER,
+            cascade = {CascadeType.MERGE,
+                    CascadeType.DETACH, CascadeType.REFRESH})
+    private List<PostTag> postTags;
+
+/*
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE,
                     CascadeType.DETACH, CascadeType.REFRESH})
@@ -52,6 +58,7 @@ public class Post {
             inverseJoinColumns = @JoinColumn(name="tag_id")
     )
     private List<Tag> tags;
+*/
 
     public Post() {
 
@@ -147,20 +154,39 @@ public class Post {
         this.comments = comments;
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<PostTag> getPostTags() {
+        return postTags;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setPostTags(List<PostTag> postTags) {
+        this.postTags = postTags;
     }
 
-    public void add(Tag tag) {
-        if(tags == null){
-            tags = new ArrayList<>();
+/*
+        public List<Tag> getTags() {
+            return tags;
         }
 
-        tags.add(tag);
+        public void setTags(List<Tag> tags) {
+            this.tags = tags;
+        }
+
+        public void add(Tag tag) {
+            if(tags == null){
+                tags = new ArrayList<>();
+            }
+
+            tags.add(tag);
+        }
+*/
+
+    public void add(PostTag postTag) {
+        if(postTags == null) {
+            postTags = new ArrayList<>();
+        }
+
+        postTags.add(postTag);
+        postTag.setPost(this);
     }
 
     public void add(Comment comment) {
@@ -170,10 +196,6 @@ public class Post {
 
         comments.add(comment);
         comment.setPost(this);
-    }
-
-    public void remove(Comment comment) {
-        comments.remove(comment);
     }
 
     @Override

@@ -22,6 +22,11 @@ public class Tag {
     @Column(name="updated_at")
     private String updatedAt;
 
+    @OneToMany(mappedBy = "tag", fetch=FetchType.EAGER,
+            cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<PostTag> postTags;
+
+/*
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
@@ -30,6 +35,7 @@ public class Tag {
         inverseJoinColumns = @JoinColumn(name="post_id")
     )
     private List<Post> posts;
+*/
 
     public Tag() {
 
@@ -72,6 +78,15 @@ public class Tag {
         this.id = id;
     }
 
+    public List<PostTag> getPostTags() {
+        return postTags;
+    }
+
+    public void setPostTags(List<PostTag> postTags) {
+        this.postTags = postTags;
+    }
+
+/*
     public List<Post> getPosts() {
         return posts;
     }
@@ -86,6 +101,16 @@ public class Tag {
         }
 
         posts.add(post);
+    }
+*/
+
+    public void add(PostTag postTag) {
+        if (postTags == null) {
+            postTags = new ArrayList<>();
+        }
+
+        postTags.add(postTag);
+        postTag.setTag(this);
     }
 
     @Override
