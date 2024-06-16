@@ -2,6 +2,7 @@ package com.jey.blogapp.controller;
 
 import com.jey.blogapp.entity.Post;
 import com.jey.blogapp.entity.PostTag;
+import com.jey.blogapp.entity.PostTagId;
 import com.jey.blogapp.entity.Tag;
 import com.jey.blogapp.service.PostService;
 import com.jey.blogapp.service.PostTagService;
@@ -36,11 +37,37 @@ public class TagController {
     @GetMapping("/deleteTag")
     public String deleteTag(@RequestParam("id") int id, @RequestParam("postId") int postId, Model model) {
         Tag tag = tagService.findById(id);
-        model.addAttribute("post", postService.findById(postId));
+        Post post = postService.findById(postId);
+        PostTagId postTagId = new PostTagId(postId, id);
+        PostTag postTag = postTagService.findById(postTagId);
 
+        model.addAttribute("post", post);
+
+        for(int i=0; i<tag.getPostTags().size(); i++) {
+            if(postTag.equals(tag.getPostTags().get(i))) {
+                tag.getPostTags().remove(i);
+                break;
+            }
+        }
+
+        for(int j=0; j<post.getPostTags().size(); j++) {
+            if(postTag.equals(post.getPostTags().get(j))) {
+                post.getPostTags().remove(j);
+                break;
+            }
+        }
+
+        postTagService.deleteById(postTagId);
+
+        if(tag.getPostTags().size() == 0) {
+            tagService.deleteById(id);
+        }
+
+
+/*
         while(tag.getPostTags().size()>0) {
             PostTag postTag = tag.getPostTags().remove(0);
-            Post post = postTag.getPost();
+            post = postTag.getPost();
 
             for(int j=0; j<post.getPostTags().size(); j++) {
                 if(postTag.equals(post.getPostTags().get(j))) {
@@ -48,11 +75,11 @@ public class TagController {
                     break;
                 }
             }
-
             postTagService.deleteById(postTag.getId());
         }
+*/
 
-        tagService.deleteById(id);
+//        tagService.deleteById(id);
 
         return "show-post";
     }
