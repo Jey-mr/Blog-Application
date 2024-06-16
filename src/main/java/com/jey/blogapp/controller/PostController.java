@@ -82,8 +82,10 @@ public class PostController {
         post.setExcerpt(getExcerpt(post.getContent()));
         post.setPublishedAt(request.getParameter("publishedAt"));
         post.setCreatedAt(request.getParameter("createdAt"));
-
         postService.save(post);
+
+        String tokens[] = request.getParameter("tags").split(", ");
+        addTag(tokens, post);
 
         return "redirect:/";
     }
@@ -102,7 +104,7 @@ public class PostController {
         user.add(post);
         postService.save(post);
 
-        String tokens[] = request.getParameter("tags").split(",");
+        String tokens[] = request.getParameter("tags").split(", ");
         addTag(tokens, post);
 
         return "redirect:/";
@@ -112,8 +114,11 @@ public class PostController {
         for(String token : tokens) {
             Tag tag = tagService.findByName(token);
 
+            System.out.println(tag);
+
             if(tag == null){
                 tag = new Tag(token, getDate());
+                System.out.println("It should not come here!!");
             }
 
             PostTag postTag = new PostTag(getDate());
