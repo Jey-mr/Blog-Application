@@ -63,8 +63,52 @@ public class PostController {
 
     @GetMapping("/deletePost")
     public String deletePost(@RequestParam("id") int id) {
+        Post post = postService.findById(id);
+
+        while(post.getPostTags().size() > 0) {
+            PostTag postTag = post.getPostTags().get(0);
+            Tag tag = postTag.getTag();
+            delete(tag.getId(), id, null);
+        }
+
         postService.deleteById(id);
         return "redirect:/";
+    }
+
+    private void delete(int id, int postId, Model model) {
+        Tag tag = tagService.findById(id);
+        Post post = postService.findById(postId);
+        PostTagId postTagId = new PostTagId(postId, id);
+        PostTag postTag = postTagService.findById(postTagId);
+
+        if(model != null)
+            model.addAttribute("post", post);
+
+        removePostTagFromTag(tag, postTag);
+        removePostTagFromPost(post, postTag);
+        postTagService.deleteById(postTagId);
+
+        if(tag.getPostTags().size() == 0) {
+            tagService.deleteById(id);
+        }
+    }
+
+    private void removePostTagFromTag(Tag tag, PostTag postTag) {
+        for(int i=0; i<tag.getPostTags().size(); i++) {
+            if(postTag.equals(tag.getPostTags().get(i))) {
+                tag.getPostTags().remove(i);
+                break;
+            }
+        }
+    }
+
+    private void removePostTagFromPost(Post post, PostTag postTag) {
+        for(int j=0; j<post.getPostTags().size(); j++) {
+            if(postTag.equals(post.getPostTags().get(j))) {
+                post.getPostTags().remove(j);
+                break;
+            }
+        }
     }
 
     @PostMapping("/updatePost")
