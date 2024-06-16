@@ -87,7 +87,7 @@ public class PostController {
         String tokens[] = request.getParameter("tags").split(", ");
         addTag(tokens, post);
 
-        return "redirect:/";
+        return "redirect:/post" + id;
     }
 
     @PostMapping("/processForm")
@@ -114,17 +114,12 @@ public class PostController {
         for(String token : tokens) {
             Tag tag = tagService.findByName(token);
 
-            System.out.println(tag);
-
             if(tag == null){
                 tag = new Tag(token, getDate());
-                System.out.println("It should not come here!!");
             }
 
             PostTag postTag = new PostTag(getDate());
             PostTagId postTagId = new PostTagId(post.getId(), tag.getId());
-
-            System.out.println("Post Id: "+post.getId());
 
             postTag.setId(postTagId);
             post.add(postTag);
@@ -141,7 +136,7 @@ public class PostController {
     private String getExcerpt(String content) {
         String excerpt = content.substring(0, Math.min(300, content.length()));
         int index = excerpt.lastIndexOf('.');
-        excerpt = excerpt.substring(0, index+1);
+        excerpt = excerpt.substring(0, index + 1);
         return excerpt;
     }
 

@@ -43,22 +43,25 @@
 <ul th:each="postTag: ${post.postTags}" class="myDIV">
     <div th:if="${id != postTag.tag.id}">
         <li th:text="${postTag.tag.name}" />
+
+        <form th:action="@{/editTag}" method="GET" class="hide">
+            <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+            <input type="hidden" name="postId" th:value="${post.id}" />
+            <input type="submit" value="Edit" />
+        </form>
+
+        <form th:action="@{/deleteTag}" method="GET" class="hide">
+            <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+            <input type="hidden" name="postId" th:value="${post.id}" />
+            <input type="submit" value="Delete" />
+        </form>
     </div>
 
     <form th:action="@{/updateTag}" method="POST" th:unless="${id != postTag.tag.id}">
         <input type="hidden" name="id" th:value="${postTag.tag.id}" />
-        <input type="text" name="name" th:value="${postTag.tag.name}"/>
-    </form>
-
-    <form th:action="@{/editTag}" method="GET" class="hide">
-        <input type="hidden" name="id" th:value="${postTag.tag.id}" />
         <input type="hidden" name="postId" th:value="${post.id}" />
-        <input type="submit" value="Edit" />
-    </form>
-    <form th:action="@{/deleteTag}" method="GET" class="hide">
-        <input type="hidden" name="id" th:value="${postTag.tag.id}" />
-        <input type="hidden" name="postId" th:value="${post.id}" />
-        <input type="submit" value="Delete" />
+        <input type="text" name="tag" th:value="${postTag.tag.name}"/>
+        <input type="submit" value="Update" />
     </form>
 </ul>
 
