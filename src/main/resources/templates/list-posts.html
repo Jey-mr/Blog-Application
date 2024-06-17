@@ -8,6 +8,21 @@
             text-decoration: none !important;
             color: black !important;
         }
+
+        .filter {
+            width: 25% !important;
+        }
+
+        .contents {
+            width: 70% !important;
+            display: block;
+        }
+
+        #container {
+            display: flex;
+        }
+
+
     </style>
 </head>
 <body>
@@ -16,20 +31,67 @@
 <a th:href="@{/showForm}">New Post</a>
 <br><br>
 
-<form th:action="@{/}" method="GET">
-    <input type="text" name="keyword" placeholder="search"/>
-    <input type="submit" value="Search"/>
-</form>
-<br>
+<div id="container">
+    <div class="filter">
+        <br>
+        <form th:action="@{/}" method="GET">
+            <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+            <input type="text" name="keyword" placeholder="search"/>
+            <input type="submit" value="Search"/>
+        </form>
 
-<div th:each="post: ${posts}">
-    <a th:href="@{/post{id}(id=${post.id})}" class="posts">
-        <div>
-            <h2 th:text="${post.title}"/>
-            <p th:text="${post.user.name + ', ' + post.publishedAt}"/>
-            <p th:text="${post.excerpt}"/>
+        <br>
+
+        <form  th:action="@{/}" method="GET">
+            <input type="hidden" name="keyword" th:value="${keyword}"/>
+            <label>SortBy:</label>
+            <select name="sortBy">
+                <option value="" disabled selected hidden>Select One</option>
+                <option value="title">title</option>
+                <option value="publishedAt">publishedAt</option>
+            </select>
+            <input type="submit" value="Sort"/>
+        </form>
+
+        <br><br>
+
+        <form th:action="@{/}" method="GET">
+            <h2>Users:</h2>
+            <div th:each="user: ${users}">
+                <input type="checkbox" th:name="${user.name}" th:value="${user.name}"/> <lable th:text="${user.name}" />
+                <br>
+            </div>
+            <br>
+
+            <h2>Tags:</h2>
+            <div th:each="tag: ${tags}">
+                <input type="checkbox" th:name="${tag.name}" th:value="${tag.name}"/> <lable th:text="${tag.name}" />
+                <br>
+            </div>
+            <br>
+
+            <h2>Published Date:</h2>
+            <div th:each="post: ${posts}">
+                <input type="checkbox" th:name="${post.publishedAt}" th:value="${post.publishedAt}"/> <lable th:text="${post.publishedAt}"/>
+                <br>
+            </div>
+            <br>
+
+            <input type="submit" />
+        </form>
+    </div>
+
+    <div class="contents">
+        <div th:each="post: ${posts}">
+            <a th:href="@{/post{id}(id=${post.id})}" class="posts">
+                <div>
+                    <h2 th:text="${post.title}"/>
+                    <p th:text="${post.user.name + ', ' + post.publishedAt}"/>
+                    <p th:text="${post.excerpt}"/>
+                </div>
+            </a>
         </div>
-    </a>
+    </div>
 </div>
 
 </body>

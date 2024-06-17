@@ -4,6 +4,7 @@ import com.jey.blogapp.dao.PostRepository;
 import com.jey.blogapp.entity.Post;
 import com.jey.blogapp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,8 +30,34 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> findPostsSortBy(String sortBy, String order) {
+        Sort sort = null;
+
+        if(order.equalsIgnoreCase("asc")  ||  order == null) {
+            sort = Sort.by(Sort.Direction.ASC, sortBy);
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, sortBy);
+        }
+
+        return postRepository.findAll(sort);
+    }
+
+    @Override
     public List<Post> findPostsWithKeyword(String keyword) {
         return postRepository.findPostsWithKeyword(keyword);
+    }
+
+    @Override
+    public List<Post> findPostsSortByWithKeyword(String sortBy, String order, String keyword) {
+        Sort sort = null;
+
+        if(order.equalsIgnoreCase("asc")  ||  order == null) {
+            sort = Sort.by(Sort.Direction.ASC, sortBy);
+        } else {
+            sort = Sort.by(Sort.Direction.DESC, sortBy);
+        }
+
+        return postRepository.findPostsSortByWithKeyword(keyword, sort);
     }
 
     @Override

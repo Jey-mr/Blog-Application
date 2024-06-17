@@ -33,7 +33,12 @@ public class PostController {
     @GetMapping("/")
     public String listPosts(HttpServletRequest request, Model model) {
         String keyword = request.getParameter("keyword");
+        String sortBy = request.getParameter("sortBy");
+        String order = null;
         List<Post> posts = null;
+
+        if(order == null)
+            order = "asc";
 
         if(keyword != null) {
             keyword = keyword.trim();
@@ -41,13 +46,97 @@ public class PostController {
         }
 
         if(keyword == null) {
-            posts = postService.findAll();
+           if(sortBy == null) {
+               posts = postService.findAll();
+           } else {
+               posts = postService.findPostsSortBy(sortBy, order);
+           }
         } else {
-            posts = postService.findPostsWithKeyword(keyword);
+            if(sortBy == null) {
+                posts = postService.findPostsWithKeyword(keyword);
+            } else {
+                posts = postService.findPostsSortByWithKeyword(sortBy, order, keyword);
+            }
         }
 
+        List<Tag> tags = tagService.findAll();
+        model.addAttribute("tags", tags);
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
+
+        posts = filterPosts(request, posts);
+
         model.addAttribute("posts", posts);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sortBy", sortBy);
+
         return "list-posts";
+    }
+
+
+    private List<Post> filterPosts(HttpServletRequest request, List<Post> posts) {
+        boolean userCheck = false;
+        boolean publishedCheck = false;
+        boolean tagCheck = false;
+
+        List<User> users = userService.findAll();
+        List<Tag> tags = tagService.findAll();
+
+        for(User user: users) {
+            if(request.getParameter(user.getName()) != null) {
+                userCheck = true;
+                break;
+            }
+        }
+
+        for(Tag tag: tags) {
+            if(request.getParameter(tag.getName()) != null) {
+                tagCheck = true;
+                break;
+            }
+        }
+
+        for(Post post: posts) {
+            if(request.getParameter(post.getPublishedAt()) != null) {
+                publishedCheck = true;
+                break;
+            }
+        }
+
+        for(int i=0; i<posts.size(); i++) {
+            Post post = posts.get(i);
+
+            if(userCheck  &&  request.getParameter(post.getUser().getName()) == null) {
+                posts.remove(i);
+                i--;
+                continue;
+            };
+
+            if(publishedCheck  &&  request.getParameter(post.getPublishedAt()) == null) {
+                posts.remove(i);
+                i--;
+                continue;
+            }
+
+            List<PostTag> postTags = post.getPostTags();
+
+            int j;
+            for(j = 0; j < postTags.size(); j++) {
+                PostTag postTag = postTags.get(j);
+                String tag = postTag.getTag().getName();
+
+                if (request.getParameter(tag) != null) {
+                    break;
+                }
+            }
+
+            if (tagCheck  &&  j == postTags.size()){
+                posts.remove(i);
+                i--;
+            }
+        }
+
+        return posts;
     }
 
     @GetMapping("/post{postId}")
