@@ -29,6 +29,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> findPostsWithKeyword(String keyword) {
+        return postRepository.findPostsWithKeyword(keyword);
+    }
+
+    @Override
     public Post findById(int id) {
         Optional<Post> result = postRepository.findById(id);
         Post post = null;

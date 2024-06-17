@@ -31,8 +31,21 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public String listPosts(Model model) {
-        List<Post> posts = postService.findAll();
+    public String listPosts(HttpServletRequest request, Model model) {
+        String keyword = request.getParameter("keyword");
+        List<Post> posts = null;
+
+        if(keyword != null) {
+            keyword = keyword.trim();
+            keyword = (keyword.length() == 0) ? null : keyword;
+        }
+
+        if(keyword == null) {
+            posts = postService.findAll();
+        } else {
+            posts = postService.findPostsWithKeyword(keyword);
+        }
+
         model.addAttribute("posts", posts);
         return "list-posts";
     }
