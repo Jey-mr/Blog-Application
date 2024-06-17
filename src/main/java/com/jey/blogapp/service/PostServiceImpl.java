@@ -4,6 +4,9 @@ import com.jey.blogapp.dao.PostRepository;
 import com.jey.blogapp.entity.Post;
 import com.jey.blogapp.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +33,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findPostsSortBy(String sortBy, String order) {
+    public Page<Post> findAll(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return postRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Post> findPostsSortBy(String sortBy, String order, int pageNo, int pageSize) {
         Sort sort = null;
+        Pageable pageable = null;
 
         if(order.equalsIgnoreCase("asc")  ||  order == null) {
             sort = Sort.by(Sort.Direction.ASC, sortBy);
@@ -39,17 +49,20 @@ public class PostServiceImpl implements PostService {
             sort = Sort.by(Sort.Direction.DESC, sortBy);
         }
 
-        return postRepository.findAll(sort);
+        pageable = PageRequest.of(pageNo, pageSize, sort);
+        return postRepository.findAll(pageable);
     }
 
     @Override
-    public List<Post> findPostsWithKeyword(String keyword) {
-        return postRepository.findPostsWithKeyword(keyword);
+    public List<Post> findPostsWithKeyword(String keyword, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return postRepository.findPostsWithKeyword(keyword, pageable);
     }
 
     @Override
-    public List<Post> findPostsSortByWithKeyword(String sortBy, String order, String keyword) {
-        Sort sort = null;
+    public List<Post> findPostsSortByWithKeyword(String sortBy, String order, String keyword, int pageNo, int pageSize) {
+        Sort sort;
+        Pageable pageable;
 
         if(order.equalsIgnoreCase("asc")  ||  order == null) {
             sort = Sort.by(Sort.Direction.ASC, sortBy);
@@ -57,7 +70,9 @@ public class PostServiceImpl implements PostService {
             sort = Sort.by(Sort.Direction.DESC, sortBy);
         }
 
-        return postRepository.findPostsSortByWithKeyword(keyword, sort);
+        pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        return postRepository.findPostsSortByWithKeyword(keyword, pageable);
     }
 
     @Override

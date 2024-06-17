@@ -7,6 +7,7 @@ import com.jey.blogapp.service.TagService;
 import com.jey.blogapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,26 +37,52 @@ public class PostController {
         String sortBy = request.getParameter("sortBy");
         String order = null;
         List<Post> posts = null;
+        Page<Post> page = null;
+        int pageNo = 0;
+        int pageSize = 4;
+
+        if(request.getParameter("pageNo") != null) {
+            pageNo = Integer.parseInt(request.getParameter("pageNo"));
+
+            if(request.getParameter("navigate") != null) {
+                pageNo++;
+            } else {
+                pageNo--;
+            }
+        }
+
+        pageNo = Math.max(pageNo, 0);
+
 
         if(order == null)
             order = "asc";
 
         if(keyword != null) {
             keyword = keyword.trim();
-            keyword = (keyword.length() == 0) ? null : keyword;
+            keyword = (keyword.isEmpty()) ? null : keyword;
         }
+
+        if(sortBy != null) {
+            sortBy = sortBy.trim();
+            sortBy = (sortBy.isEmpty()) ? null : sortBy;
+        }
+
+        System.out.println("sortBy: "+ sortBy);
+        System.out.println("keyword: "+ keyword);
 
         if(keyword == null) {
            if(sortBy == null) {
-               posts = postService.findAll();
+               page = postService.findAll(pageNo, pageSize);
+               posts = page.getContent();
            } else {
-               posts = postService.findPostsSortBy(sortBy, order);
+               page = postService.findPostsSortBy(sortBy, order, pageNo, pageSize);
+               posts = page.getContent();
            }
         } else {
             if(sortBy == null) {
-                posts = postService.findPostsWithKeyword(keyword);
+                posts = postService.findPostsWithKeyword(keyword, pageNo, pageSize);
             } else {
-                posts = postService.findPostsSortByWithKeyword(sortBy, order, keyword);
+                posts = postService.findPostsSortByWithKeyword(sortBy, order, keyword, pageNo, pageSize);
             }
         }
 
@@ -69,6 +96,7 @@ public class PostController {
         model.addAttribute("posts", posts);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("pageNo", pageNo);
 
         return "list-posts";
     }

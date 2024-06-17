@@ -22,6 +22,18 @@
             display: flex;
         }
 
+        .navigation {
+            width: 100%;
+        }
+
+        .previous {
+            float: left;
+        }
+
+        .next {
+            float: right;
+        }
+
 
     </style>
 </head>
@@ -91,8 +103,51 @@
                 </div>
             </a>
         </div>
+
+        <div class="navigation">
+            <div class="previous">
+                <form th:action="@{/}" method="GET">
+                    <input type="hidden" name="pageNo" th:value="${pageNo}"/>
+                    <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+                    <input type="hidden" name="keyword" th:value="${keyword}"/>
+                    <input type="submit" value="Prev Page">
+                </form>
+            </div>
+
+            <div class="next">
+                <form th:action="@{/}" method="GET">
+                    <input type="hidden" name="navigate" value="next" />
+                    <input type="hidden" name="pageNo" th:value="${pageNo}"/>
+                    <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+                    <input type="hidden" name="keyword" th:value="${keyword}"/>
+                    <input type="submit" value="Next Page">
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+
+
+<!--<div class="navigation">-->
+<!--    <div class="previous">-->
+<!--        <form th:action="@{/}" method="GET">-->
+<!--            <input type="hidden" name="pageNo" th:value="${pageNo}"/>-->
+<!--            <input type="hidden" name="sortBy" th:value="${sortBy}"/>-->
+<!--            <input type="hidden" name="keyword" th:value="${keyword}"/>-->
+<!--            <input type="submit" value="Prev Page">-->
+<!--        </form>-->
+<!--    </div>-->
+
+<!--    <div class="next">-->
+<!--        <form th:action="@{/}" method="GET">-->
+<!--            <input type="hidden" name="navigate" value="next" />-->
+<!--            <input type="hidden" name="pageNo" th:value="${pageNo}"/>-->
+<!--            <input type="hidden" name="sortBy" th:value="${sortBy}"/>-->
+<!--            <input type="hidden" name="keyword" th:value="${keyword}"/>-->
+<!--            <input type="submit" value="Next Page">-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
 
 </body>
 </html>
