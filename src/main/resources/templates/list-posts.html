@@ -41,6 +41,8 @@
 <h1>My Blog Application</h1>
 <a th:href="@{/}">Home</a>
 <a th:href="@{/showForm}">New Post</a>
+
+
 <br><br>
 
 <div id="container">
@@ -49,6 +51,19 @@
         <form th:action="@{/}" method="GET">
             <input type="hidden" name="sortBy" th:value="${sortBy}"/>
             <input type="text" name="keyword" placeholder="search"/>
+
+            <div th:each="user: ${users}">
+                <input type="hidden" th:if="${param.get(user.name) != null}" th:name="${user.name}" th:value="${user.name}"/>
+            </div>
+
+            <div th:each="tag: ${tags}">
+                <input type="hidden" th:if="${param.get(tag.name) != null}" th:name="${tag.name}" th:value="${tag.name}"/>
+            </div>
+
+            <div th:each="post: ${posts}">
+                <input type="hidden" th:if="${param.get(post.publishedAt) != null}" th:name="${post.publishedAt}" th:value="${post.publishedAt}"/>
+            </div>
+
             <input type="submit" value="Search"/>
         </form>
 
@@ -62,6 +77,19 @@
                 <option value="title">title</option>
                 <option value="publishedAt">publishedAt</option>
             </select>
+
+            <div th:each="user: ${users}">
+                <input type="hidden" th:if="${param.get(user.name) != null}" th:name="${user.name}" th:value="${user.name}"/>
+            </div>
+
+            <div th:each="tag: ${tags}">
+                <input type="hidden" th:if="${param.get(tag.name) != null}" th:name="${tag.name}" th:value="${tag.name}"/>
+            </div>
+
+            <div th:each="post: ${posts}">
+                <input type="hidden" th:if="${param.get(post.publishedAt) != null}" th:name="${post.publishedAt}" th:value="${post.publishedAt}"/>
+            </div>
+
             <input type="submit" value="Sort"/>
         </form>
 
@@ -110,6 +138,19 @@
                     <input type="hidden" name="pageNo" th:value="${pageNo}"/>
                     <input type="hidden" name="sortBy" th:value="${sortBy}"/>
                     <input type="hidden" name="keyword" th:value="${keyword}"/>
+
+                    <div th:each="user: ${users}">
+                        <input type="hidden" th:if="${param.get(user.name) != null}" th:name="${user.name}" th:value="${user.name}"/>
+                    </div>
+
+                    <div th:each="tag: ${tags}">
+                        <input type="hidden" th:if="${param.get(tag.name) != null}" th:name="${tag.name}" th:value="${tag.name}"/>
+                    </div>
+
+                    <div th:each="post: ${posts}">
+                        <input type="hidden" th:if="${param.get(post.publishedAt) != null}" th:name="${post.publishedAt}" th:value="${post.publishedAt}"/>
+                    </div>
+
                     <input type="submit" value="Prev Page">
                 </form>
             </div>
@@ -120,6 +161,20 @@
                     <input type="hidden" name="pageNo" th:value="${pageNo}"/>
                     <input type="hidden" name="sortBy" th:value="${sortBy}"/>
                     <input type="hidden" name="keyword" th:value="${keyword}"/>
+
+
+                    <div th:each="user: ${users}">
+                        <input type="hidden" th:if="${param.get(user.name) != null}" th:name="${user.name}" th:value="${user.name}"/>
+                    </div>
+
+                    <div th:each="tag: ${tags}">
+                        <input type="hidden" th:if="${param.get(tag.name) != null}" th:name="${tag.name}" th:value="${tag.name}"/>
+                    </div>
+
+                    <div th:each="post: ${posts}">
+                        <input type="hidden" th:if="${param.get(post.publishedAt) != null}" th:name="${post.publishedAt}" th:value="${post.publishedAt}"/>
+                    </div>
+
                     <input type="submit" value="Next Page">
                 </form>
             </div>

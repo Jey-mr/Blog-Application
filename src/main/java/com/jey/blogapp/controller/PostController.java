@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class PostController {
         List<Post> posts = null;
         Page<Post> page = null;
         int pageNo = 0;
-        int pageSize = 4;
+        int pageSize = 10;
 
         if(request.getParameter("pageNo") != null) {
             pageNo = Integer.parseInt(request.getParameter("pageNo"));
@@ -67,8 +68,6 @@ public class PostController {
             sortBy = (sortBy.isEmpty()) ? null : sortBy;
         }
 
-        System.out.println("sortBy: "+ sortBy);
-        System.out.println("keyword: "+ keyword);
 
         if(keyword == null) {
            if(sortBy == null) {
@@ -102,16 +101,22 @@ public class PostController {
     }
 
 
-    private List<Post> filterPosts(HttpServletRequest request, List<Post> posts) {
+    private List<Post> filterPosts(HttpServletRequest request, List<Post> postsUnmodified) {
         boolean userCheck = false;
         boolean publishedCheck = false;
         boolean tagCheck = false;
 
+        List<Post> posts = new ArrayList<>();
         List<User> users = userService.findAll();
         List<Tag> tags = tagService.findAll();
 
+        for(Post post: postsUnmodified) {
+            posts.add(post);
+        }
+
         for(User user: users) {
             if(request.getParameter(user.getName()) != null) {
+                System.out.println("User Name: "+request.getParameter(user.getName()));
                 userCheck = true;
                 break;
             }
