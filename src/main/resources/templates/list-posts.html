@@ -50,6 +50,7 @@
         <br>
         <form th:action="@{/}" method="GET">
             <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+            <input type="hidden" name="order" th:value="${order}"/>
             <input type="text" name="keyword" placeholder="search"/>
 
             <div th:each="user: ${users}">
@@ -73,9 +74,16 @@
             <input type="hidden" name="keyword" th:value="${keyword}"/>
             <label>SortBy:</label>
             <select name="sortBy">
-                <option value="" disabled selected hidden>Select One</option>
+                <option value="" disabled selected hidden>Select</option>
                 <option value="title">title</option>
                 <option value="publishedAt">publishedAt</option>
+            </select>
+
+            <label>OrderBy:</label>
+            <select name="order">
+                <option value="" disabled selected hidden>Select</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
             </select>
 
             <div th:each="user: ${users}">
@@ -96,6 +104,10 @@
         <br><br>
 
         <form th:action="@{/}" method="GET">
+            <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+            <input type="hidden" name="order" th:value="${order}"/>
+            <input type="hidden" name="keyword" th:value="${keyword}"/>
+
             <h2>Users:</h2>
             <div th:each="user: ${users}">
                 <input type="checkbox" th:name="${user.name}" th:value="${user.name}"/> <lable th:text="${user.name}" />
@@ -137,6 +149,7 @@
                 <form th:action="@{/}" method="GET">
                     <input type="hidden" name="pageNo" th:value="${pageNo}"/>
                     <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+                    <input type="hidden" name="order" th:value="${order}"/>
                     <input type="hidden" name="keyword" th:value="${keyword}"/>
 
                     <div th:each="user: ${users}">
@@ -160,6 +173,7 @@
                     <input type="hidden" name="navigate" value="next" />
                     <input type="hidden" name="pageNo" th:value="${pageNo}"/>
                     <input type="hidden" name="sortBy" th:value="${sortBy}"/>
+                    <input type="hidden" name="order" th:value="${order}"/>
                     <input type="hidden" name="keyword" th:value="${keyword}"/>
 
 

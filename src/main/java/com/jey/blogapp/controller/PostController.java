@@ -36,11 +36,11 @@ public class PostController {
     public String listPosts(HttpServletRequest request, Model model) {
         String keyword = request.getParameter("keyword");
         String sortBy = request.getParameter("sortBy");
-        String order = null;
-        List<Post> posts = null;
+        String order = request.getParameter("order");
+        List<Post> posts = new ArrayList<>();
         Page<Post> page = null;
         int pageNo = 0;
-        int pageSize = 10;
+        int pageSize = 4;
 
         if(request.getParameter("pageNo") != null) {
             pageNo = Integer.parseInt(request.getParameter("pageNo"));
@@ -71,17 +71,64 @@ public class PostController {
 
         if(keyword == null) {
            if(sortBy == null) {
-               page = postService.findAll(pageNo, pageSize);
-               posts = page.getContent();
+               int n = 1;
+               List<Post> tempPosts;
+
+               for(int i=0; true; i++) {
+                   page = postService.findAll(i, pageSize);
+                   tempPosts = page.getContent();
+
+                   if(tempPosts.size() == 0)
+                       break;
+
+                   for(Post post: tempPosts)
+                       posts.add(post);
+               }
+//               page = postService.findAll(pageNo, pageSize);
+//               posts = page.getContent();
            } else {
-               page = postService.findPostsSortBy(sortBy, order, pageNo, pageSize);
-               posts = page.getContent();
+               List<Post> tempPosts;
+
+               for(int i=0; true; i++) {
+                   page = postService.findPostsSortBy(sortBy, order, i, pageSize);
+                   tempPosts = page.getContent();
+
+                   if(tempPosts.size() == 0)
+                       break;
+
+                   for(Post post: tempPosts)
+                       posts.add(post);
+               }
+//               page = postService.findPostsSortBy(sortBy, order, pageNo, pageSize);
+//               posts = page.getContent();
            }
         } else {
             if(sortBy == null) {
-                posts = postService.findPostsWithKeyword(keyword, pageNo, pageSize);
+                List<Post> tempPosts;
+
+                for(int i=0; true; i++) {
+                    tempPosts = postService.findPostsWithKeyword(keyword, i, pageSize);
+
+                    if(tempPosts.size() == 0)
+                        break;
+
+                    for(Post post: tempPosts)
+                        posts.add(post);
+                }
+//                posts = postService.findPostsWithKeyword(keyword, pageNo, pageSize);
             } else {
-                posts = postService.findPostsSortByWithKeyword(sortBy, order, keyword, pageNo, pageSize);
+                List<Post> tempPosts;
+
+                for(int i=0; true; i++) {
+                    tempPosts = postService.findPostsSortByWithKeyword(sortBy, order, keyword, pageNo, pageSize);
+
+                    if(tempPosts.size() == 0)
+                        break;
+
+                    for(Post post: tempPosts)
+                        posts.add(post);
+                }
+//                posts = postService.findPostsSortByWithKeyword(sortBy, order, keyword, pageNo, pageSize);
             }
         }
 
@@ -91,32 +138,42 @@ public class PostController {
         model.addAttribute("users", users);
 
         posts = filterPosts(request, posts);
+        List<Post> postsSend = new ArrayList<>();
 
-        model.addAttribute("posts", posts);
+        for(int i=0; i<pageSize; i++) {
+            int index = pageNo * pageSize + i;
+
+            if(index >= posts.size())
+                break;
+
+            postsSend.add(posts.get(index));
+        }
+
+        model.addAttribute("posts", postsSend);
         model.addAttribute("keyword", keyword);
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("order", order);
         model.addAttribute("pageNo", pageNo);
 
         return "list-posts";
     }
 
 
-    private List<Post> filterPosts(HttpServletRequest request, List<Post> postsUnmodified) {
+    private List<Post> filterPosts(HttpServletRequest request, List<Post> posts) {
         boolean userCheck = false;
         boolean publishedCheck = false;
         boolean tagCheck = false;
 
-        List<Post> posts = new ArrayList<>();
+//        List<Post> posts = new ArrayList<>();
         List<User> users = userService.findAll();
         List<Tag> tags = tagService.findAll();
 
-        for(Post post: postsUnmodified) {
-            posts.add(post);
-        }
+//        for(Post post: postsUnmodified) {
+//            posts.add(post);
+//        }
 
         for(User user: users) {
             if(request.getParameter(user.getName()) != null) {
-                System.out.println("User Name: "+request.getParameter(user.getName()));
                 userCheck = true;
                 break;
             }
