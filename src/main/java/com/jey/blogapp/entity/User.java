@@ -22,6 +22,12 @@ public class User {
     @Column(name="password")
     private String password;
 
+    @Column(name="active")
+    private boolean active;
+
+    @Column(name="role")
+    private String role;
+
     @OneToMany(mappedBy = "user", fetch=FetchType.EAGER,
             cascade = {CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
@@ -35,6 +41,8 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
+        active = true;
+        role = "ROLE_AUTHOR";
     }
 
     public int getId() {

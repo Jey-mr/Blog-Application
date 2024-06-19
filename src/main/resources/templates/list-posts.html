@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -22,6 +22,12 @@
             display: flex;
         }
 
+        .login{
+            display: flex;
+            width: 125px;
+            justify-content: space-between;
+        }
+
         .navigation {
             width: 100%;
         }
@@ -39,8 +45,22 @@
 </head>
 <body>
 <h1>My Blog Application</h1>
-<a th:href="@{/}">Home</a>
-<a th:href="@{/showForm}">New Post</a>
+
+<div class="login">
+    <a th:href="@{/}">Home</a>
+
+    <form sec:authorize="isAnonymous()" th:action="@{/login}" method="GET">
+        <input type="submit" value="Login">
+    </form>
+
+    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="POST">
+        <input type="submit" value="Logout">
+    </form>
+</div>
+
+<div sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')">
+    <a th:href="@{/showForm}">New Post</a>
+</div>
 
 
 <br><br>
@@ -78,6 +98,7 @@
                 <option value="title">title</option>
                 <option value="publishedAt">publishedAt</option>
             </select>
+            <br>
 
             <label>OrderBy:</label>
             <select name="order">

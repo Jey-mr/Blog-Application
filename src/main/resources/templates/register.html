@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Registration Page</title>
+
+
+</head>
+
+<body>
+
+<form action="#" th:action="@{/process}"
+      method="POST">
+
+    <div th:if="${param.error}">
+
+        <p class="failed">Password is not matched</p>
+
+    </div>
+
+    <p>
+        <input type="text" name="name" placeholder="Name" />
+    </p>
+
+    <p>
+        <input type="text" name="email" placeholder="Email" />
+    </p>
+
+    <p>
+        <input type="password" name="password" placeholder="Password" />
+    </p>
+
+    <p>
+        <input type="password" name="password2" placeholder="Confirm Password" />
+    </p>
+
+    <input type="submit" value="Register" />
+
+</form>
+
+<div class="login">
+    <p>Have account</p>
+    <form action="#" th:action="@{/login}" method="GET">
+        <input type="submit" value="Login">
+    </form>
+</div>
+
+</body>
+
+</html>

@@ -87,16 +87,18 @@ public class TagController {
         int postId = Integer.parseInt(request.getParameter("postId"));
         Tag tag = tagService.findById(id);
         Post post = postService.findById(postId);
-        String token = request.getParameter("tag");
+        String token = request.getParameter("tag").trim();
         model.addAttribute("post", post);
 
-        if(tag.getName() != token) {
+        if(tag.getName() != token  &&  token.length() > 0) {
             if(tag.getPostTags().size() == 1){
                 update(token, tag, post);
-            } else {
+            } else{
                 delete(id, postId, model);
                 addTag(token, post);
             }
+        } else if(tag.getName() != token) {
+            delete(id, postId, model);
         }
 
         return "redirect:/post" + postId;

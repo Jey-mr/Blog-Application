@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -27,15 +27,16 @@
     <p th:text="${post.content}" class="center"/>
 </div>
 
-<form th:action="@{/editPost}" method="GET">
-    <input type="hidden" name="id" th:value="${post.id}" />
-    <input type="submit" value="Edit" />
-</form>
-
-<form th:action="@{/deletePost}" method="GET">
-    <input type="hidden" name="id" th:value="${post.id}" />
-    <input type="submit" value="Delete" />
-</form>
+<div th:if="${allowed == true}">
+    <form th:action="@{/editPost}" method="GET">
+        <input type="hidden" name="id" th:value="${post.id}" />
+        <input type="submit" value="Edit" />
+    </form>
+    <form th:action="@{/deletePost}" method="GET">
+        <input type="hidden" name="id" th:value="${post.id}" />
+        <input type="submit" value="Delete" />
+    </form>
+</div>
 
 <br><br>
 
@@ -44,17 +45,18 @@
     <div th:if="${id != postTag.tag.id}">
         <li th:text="${postTag.tag.name}" />
 
-        <form th:action="@{/editTag}" method="GET" class="hide">
-            <input type="hidden" name="id" th:value="${postTag.tag.id}" />
-            <input type="hidden" name="postId" th:value="${post.id}" />
-            <input type="submit" value="Edit" />
-        </form>
-
-        <form th:action="@{/deleteTag}" method="GET" class="hide">
-            <input type="hidden" name="id" th:value="${postTag.tag.id}" />
-            <input type="hidden" name="postId" th:value="${post.id}" />
-            <input type="submit" value="Delete" />
-        </form>
+        <div th:if="${allowed == true}">
+            <form th:action="@{/editTag}" method="GET" class="hide">
+                <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+                <input type="hidden" name="postId" th:value="${post.id}" />
+                <input type="submit" value="Edit" />
+            </form>
+            <form th:action="@{/deleteTag}" method="GET" class="hide">
+                <input type="hidden" name="id" th:value="${postTag.tag.id}" />
+                <input type="hidden" name="postId" th:value="${post.id}" />
+                <input type="submit" value="Delete" />
+            </form>
+        </div>
     </div>
 
     <form th:action="@{/updateTag}" method="POST" th:unless="${id != postTag.tag.id}">
@@ -84,15 +86,18 @@
     <div class="myDIV" th:if="${id != comment.id}">
         <h2 th:text="${comment.name}"/>
         <p th:text="${comment.comment}"/>
-        <form th:action="@{/editComment}" method="GET" class="hide">
-            <input type="hidden" name="id" th:value="${comment.id}" />
-            <input type="submit" value="Edit" />
-        </form>
-        <form th:action="@{/deleteComment}" method="GET" class="hide">
-            <input type="hidden" name="id" th:value="${comment.id}" />
-            <input type="hidden" name="postId" th:value="${post.id}" />
-            <input type="submit" value="Delete" />
-        </form>
+
+        <div th:if="${allowed == true}">
+            <form th:action="@{/editComment}" method="GET" class="hide">
+                <input type="hidden" name="id" th:value="${comment.id}" />
+                <input type="submit" value="Edit" />
+            </form>
+            <form th:action="@{/deleteComment}" method="GET" class="hide">
+                <input type="hidden" name="id" th:value="${comment.id}" />
+                <input type="hidden" name="postId" th:value="${post.id}" />
+                <input type="submit" value="Delete" />
+            </form>
+        </div>
     </div>
 
     <form th:action="@{/updateComment}" method="POST" th:unless="${id != comment.id}">

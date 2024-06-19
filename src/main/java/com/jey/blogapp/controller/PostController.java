@@ -8,14 +8,16 @@ import com.jey.blogapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class PostController {
@@ -23,6 +25,7 @@ public class PostController {
     private UserService userService;
     private TagService tagService;
     private PostTagService postTagService;
+    private Authentication authentication;
 
     @Autowired
     public PostController(PostService postService, UserService userService, TagService tagService, PostTagService postTagService) {
@@ -233,9 +236,29 @@ public class PostController {
     public String showPost(Model model, @PathVariable int postId) {
         Post post = postService.findById(postId);
         List<Comment> comments = post.getComments();
+        boolean allowed = false;
+
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String userName = authentication.getName();
+            List<GrantedAuthority> authorities = (List<GrantedAuthority>) authentication.getAuthorities();
+
+            if(userName.equals(post.getUser().getName())) {
+                allowed = true;
+            }
+
+            for(GrantedAuthority authority: authorities) {
+                if(authority.getAuthority().equals("ROLE_ADMIN")) {
+                    allowed = true;
+                    break;
+                }
+            }
+
+        }
 
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
+        model.addAttribute("allowed", allowed);
 
         return "show-post";
     }
@@ -328,7 +351,8 @@ public class PostController {
 
     @PostMapping("/processForm")
     public String newPost(HttpServletRequest request, Model model) {
-        User user = userService.findById(1);
+        authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findByName(authentication.getName());
         Post post = new Post();
 
         post.setTitle(request.getParameter("title"));
